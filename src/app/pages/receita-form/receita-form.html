@@ -1,0 +1,72 @@
+<div class="container mt-4">
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0">
+      {{ isEdit() ? 'Editar Receita' : 'Cadastrar Receita' }}
+    </h3>
+    
+    <div class="card bg-light shadow-sm">
+      <div class="card-body py-1 px-3">
+        <small class="text-muted fw-bold text-uppercase">Total de Registros</small>
+        <h5 class="mb-0 text-primary text-center">{{ totalNaBase() }}</h5>
+      </div>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="alert alert-secondary d-flex align-items-center shadow-sm">
+      <div class="spinner-border spinner-border-sm me-3" role="status"></div>
+      <span>Carregando dados da receita...</span>
+    </div>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="salvar()">
+
+      <div class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label fw-bold">OD ESF</label>
+          <input class="form-control shadow-sm" formControlName="odEsf" placeholder="0.00" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-bold">OD CIL</label>
+          <input class="form-control shadow-sm" formControlName="odCil" placeholder="0.00" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-bold">OD EIXO</label>
+          <input class="form-control shadow-sm" formControlName="odEixo" placeholder="0" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-bold">OD DNP</label>
+          <input class="form-control shadow-sm" formControlName="odDnp" placeholder="0" />
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label fw-bold">OE ESF</label>
+          <input class="form-control shadow-sm" formControlName="oeEsf" placeholder="0.00" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-bold">OE CIL</label>
+          <input class="form-control shadow-sm" formControlName="oeCil" placeholder="0.00" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-bold">OE EIXO</label>
+          <input class="form-control shadow-sm" formControlName="oeEixo" placeholder="0" />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-bold">OE DNP</label>
+          <input class="form-control shadow-sm" formControlName="oeDnp" placeholder="0" />
+        </div>
+      </div>
+
+      <div class="d-flex gap-2 mt-5">
+        <button class="btn btn-primary px-4" type="submit" [disabled]="isLoading()">
+          <i class="bi bi-check-circle me-1"></i>
+          {{ isEdit() ? 'Salvar alterações' : 'Cadastrar' }}
+        </button>
+        
+        <button class="btn btn-outline-secondary px-4" type="button" (click)="cancelar()">
+          Voltar
+        </button>
+      </div>
+
+    </form>
+  }
+</div>

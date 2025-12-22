@@ -1,0 +1,76 @@
+<div class="container mt-5">
+  @if (isLoading()) {
+    <div class="alert alert-info text-center">
+      <div class="spinner-border spinner-border-sm me-2"></div> Carregando...
+    </div>
+  }
+
+  <div class="text-end">
+    <div class="d-flex gap-2 mb-3">
+        <button class="btn btn-primary flex-fill" routerLink="/receitas/novo">
+          <i class="bi bi-file-plus"></i> Cadastrar Receita
+        </button>
+        <button class="btn btn-success flex-fill" (click)="exportarExcel()">
+          <i class="bi bi-file-earmark-excel"></i> Planilha Excel
+        </button>
+        <button class="btn btn-danger flex-fill"><i class="bi bi-box-arrow-right"></i> Deslogar</button>
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <label class="form-label fw-bold"><i class="bi bi-search"></i> Pesquisar por Receita</label>
+    <input class="form-control shadow-sm"
+           type="text"
+           placeholder="Digite o número da receita."
+           (input)="atualizarBusca($event)" /> 
+  </div>
+
+  <div class="table-responsive shadow">
+    <table class="table table-hover table-bordered border-dark text-center">
+      <thead class="table-dark">
+        <tr>
+          <th>Número da Receita</th>
+          <th>OdEsf</th>
+          <th>OdCil</th>
+          <th>OdEixo</th>
+          <th>OdDnp</th>
+          <th>OeEsf</th>
+          <th>OeCil</th>
+          <th>OeEixo</th>
+          <th>OeDnp</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @if (receitasFiltradas().length > 0) {
+          @for (receita of receitasFiltradas(); track receita.id) {
+            <tr>
+              <td>{{ receita.id }}</td>
+              <td>{{ receita.odEsf }}</td>
+              <td>{{ receita.odCil }}</td>
+              <td>{{ receita.odEixo }}</td>
+              <td>{{ receita.odDnp }}</td>
+              <td>{{ receita.oeEsf }}</td>
+              <td>{{ receita.oeCil }}</td>
+              <td>{{ receita.oeEixo }}</td>
+              <td>{{ receita.oeDnp }}</td>
+              <td class="d-flex justify-content-center gap-2">
+                <button class="btn btn-warning btn-sm" [routerLink]="['/receitas/editar', receita.id]">
+                  <i class="bi bi-pencil-square"></i> Editar 
+                </button>
+                <button class="btn btn-danger btn-sm" (click)="remover(receita.id)">
+                  <i class="bi bi-trash"></i> Remover
+                </button>
+              </td>
+            </tr>
+          }
+        } @else if (!isLoading()) {
+          <tr>
+            <td colspan="10" class="text-center text-muted">Nenhuma receita encontrada.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
