@@ -24,6 +24,8 @@ export class ReceitaFormComponent implements OnInit {
   idEdicao = signal<number | null>(null);
 
   form: FormGroup = this.fb.group({
+    ordemServico: ['', [Validators.required]], // Adicione esta linha
+    nomeCliente: ['', [Validators.required]],  // Adicione esta linha
     odEsf: ['', Validators.required],
     odCil: ['', Validators.required],
     odEixo: ['', Validators.required],

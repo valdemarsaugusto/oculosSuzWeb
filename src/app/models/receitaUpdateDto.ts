@@ -1,5 +1,7 @@
 export interface ReceitaUpdateDto {
     id: number;
+    ordemServico: string;
+    nomeCliente: string;
     odEsf: string;
     odCil: string;
     odEixo: string;

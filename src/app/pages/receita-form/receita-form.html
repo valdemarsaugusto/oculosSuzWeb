@@ -20,6 +20,34 @@
   } @else {
     <form [formGroup]="form" (ngSubmit)="salvar()">
 
+    <div class="col-md-4">
+        <label for="ordemServico" class="form-label fw-bold">
+          <i class="bi bi-hash"></i> Ordem de Serviço
+        </label>
+        <input type="text" 
+              id="ordemServico" 
+              formControlName="ordemServico" 
+              class="form-control shadow-sm" 
+              placeholder="Ex: 1342" />
+        @if (form.get('ordemServico')?.invalid && form.get('ordemServico')?.touched) {
+          <small class="text-danger">A OS é obrigatória.</small>
+        }
+      </div>
+
+      <div class="col-md-8">
+        <label for="nomeCliente" class="form-label fw-bold">
+          <i class="bi bi-person"></i> Nome do Cliente
+        </label>
+        <input type="text" 
+              id="nomeCliente" 
+              formControlName="nomeCliente" 
+              class="form-control shadow-sm" 
+              placeholder="Digite o nome completo" />
+        @if (form.get('nomeCliente')?.invalid && form.get('nomeCliente')?.touched) {
+          <small class="text-danger">O nome do cliente é obrigatório.</small>
+        }
+      </div>
+
       <div class="row g-3">
         <div class="col-md-3">
           <label class="form-label fw-bold">OD ESF</label>

@@ -31,7 +31,8 @@
     <table class="table table-hover table-bordered border-dark text-center">
       <thead class="table-dark">
         <tr>
-          <th>Número da Receita</th>
+          <th>OS</th>
+          <th>Nome do Cliente</th>
           <th>OdEsf</th>
           <th>OdCil</th>
           <th>OdEixo</th>
@@ -48,7 +49,8 @@
         @if (receitasFiltradas() && receitasFiltradas().length > 0) {
           @for (receita of receitasFiltradas(); track receita.id) {
             <tr>
-              <td>{{ receita.id }}</td>
+              <td>{{ receita.ordemServico }}</td>
+              <td>{{ receita.nomeCliente }}</td>
               <td>{{ receita.odEsf }}</td>
               <td>{{ receita.odCil }}</td>
               <td>{{ receita.odEixo }}</td>
@@ -69,7 +71,7 @@
           }
         } @else if (!isLoading()) {
           <tr>
-            <td colspan="10" class="text-center text-muted">Nenhuma receita encontrada.</td>
+            <td colspan="11" class="text-center text-muted">Nenhuma receita encontrada.</td>
           </tr>
         }
       </tbody>

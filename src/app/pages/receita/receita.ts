@@ -57,8 +57,12 @@ export class ReceitaComponent implements OnInit {
 
     this.receitaService.RemoverReceita(id).subscribe({
       next: () => {
-        // Ao atualizar o 'receitasGeral', o 'receitasFiltradas' atualiza a tela na hora!
-        this.receitasGeral.update(prev => prev.filter(r => r.id !== id));
+        // 1. Atualiza a lista que a tabela está exibindo no momento
+        this.receitasFiltradas.update(lista => lista.filter(r => r.id !== id));
+        
+        // 2. Atualiza a lista geral para manter a consistência em futuras buscas
+        this.receitasGeral.update(lista => lista.filter(r => r.id !== id));
+
         this.toastr.success('Receita removida com sucesso.');
       },
       error: (err) => {
@@ -113,6 +117,7 @@ export class ReceitaComponent implements OnInit {
     this.isLoading.set(true);
     this.receitaService.BuscarReceita().subscribe({
       next: (resultado) => {
+        console.log(resultado);
         if (resultado && resultado.dados) {
           this.receitasFiltradas.set(resultado.dados);
         }
@@ -136,7 +141,8 @@ export class ReceitaComponent implements OnInit {
 
     // 2. Formatamos os dados para que o Excel tenha cabeçalhos bonitos
     const dadosFormatados = dados.map(r => ({
-      'ID': r.id,
+      'OS': r.ordemServico,
+      'Nome Cliente:': r.nomeCliente,
       'OD Esf': r.odEsf,
       'OD Cil': r.odCil,
       'OD Eixo': r.odEixo,
