@@ -29,22 +29,19 @@ export class ReceitaComponent implements OnInit {
   // 3. O 'computed' substitui a necessidade da variável 'receitas' e da função 'pesquisar'
 
   ngOnInit(): void {
-    //this.carregar();
+    this.carregar();
   }
 
   private carregar(): void {
     this.isLoading.set(true);
-
     this.receitaService.BuscarReceita().subscribe({
       next: (response) => {
         const dados = response.dados ?? [];
-        this.receitasGeral.set(dados);
+        this.receitasGeral.set(dados);      // Guarda a lista completa (referência)
+        this.receitasFiltradas.set(dados); // Mostra a lista completa na tabela
         this.isLoading.set(false);
-        this.toastr.success('Receitas carregadas com sucesso.');
       },
       error: (err) => {
-        console.error(err);
-        this.receitasGeral.set([]);
         this.isLoading.set(false);
         this.toastr.error('Erro ao carregar receitas.');
       }
@@ -75,24 +72,18 @@ export class ReceitaComponent implements OnInit {
   // Esta função agora apenas atualiza o termo, o 'computed' faz o resto
   atualizarBusca(event: Event) {
     const input = event.target as HTMLInputElement;
-    const valor = input.value;
+    const valor = input.value.toLowerCase().trim(); // Remove espaços e ignora maiúsculas
 
     if (valor.length > 0) {
-      // Agora o .set() vai funcionar!
-      const valorId = Number(valor);
-      this.isLoading.set(true);
-            this.receitaService.BuscarReceitaPorId(valorId).subscribe({
-        next: (res) => {
-          this.receitasFiltradas.set(res.dados);
-          this.isLoading.set(false);
-        },
-        error: () => {
-          this.isLoading.set(false);
-          this.receitasFiltradas.set([]);
-        }
-      });
+      // Filtra localmente sem ir ao servidor (muito mais rápido)
+      const filtrados = this.receitasGeral().filter(receita => 
+        receita.ordemServico.toLowerCase().includes(valor) || 
+        receita.nomeCliente.toLowerCase().includes(valor)
+      );
+      this.receitasFiltradas.set(filtrados);
     } else {
-      this.receitasFiltradas.set([]); // Limpa a tela se o input estiver vazio
+      // Se o campo for limpo, restaura a lista original instantaneamente
+      this.receitasFiltradas.set(this.receitasGeral());
     }
   }
 
