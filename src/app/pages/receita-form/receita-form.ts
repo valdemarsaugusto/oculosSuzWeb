@@ -110,6 +110,7 @@ export class ReceitaFormComponent implements OnInit {
     this.receitaService.BuscarReceita().subscribe({
       next: (res) => {
         // Pega o tamanho do array que vem da base
+        console.log(res.dados);
         const total = res.dados?.length ?? 0;
         this.totalNaBase.set(total);
       }

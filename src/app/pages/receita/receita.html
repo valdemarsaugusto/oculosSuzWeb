@@ -13,7 +13,9 @@
         <button class="btn btn-success flex-fill" (click)="exportarExcel()">
           <i class="bi bi-file-earmark-excel"></i> Planilha Excel
         </button>
-        <button class="btn btn-danger flex-fill"><i class="bi bi-box-arrow-right"></i> Deslogar</button>
+        <button class="btn btn-info flex-fill text-white" (click)="listarTodasReceitas()">
+          <i class="bi bi-list-check"></i> Consulta Geral
+        </button>
     </div>
   </div>
 
@@ -43,7 +45,7 @@
       </thead>
 
       <tbody>
-        @if (receitasFiltradas().length > 0) {
+        @if (receitasFiltradas() && receitasFiltradas().length > 0) {
           @for (receita of receitasFiltradas(); track receita.id) {
             <tr>
               <td>{{ receita.id }}</td>

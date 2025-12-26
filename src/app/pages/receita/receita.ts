@@ -1,4 +1,4 @@
-import { Component, computed, OnInit, signal, inject } from '@angular/core';
+import { Component, computed, OnInit, signal, inject, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ToastrService } from 'ngx-toastr';
 
@@ -21,23 +21,15 @@ export class ReceitaComponent implements OnInit {
 
   // 2. Signals de estado necessários
   receitasGeral = signal<ReceitaModel[]>([]);
-  isLoading = signal<boolean>(true);
+
+  isLoading: WritableSignal<boolean> = signal<boolean>(false);
   termoBusca = signal('');
 
+  receitasFiltradas: WritableSignal<ReceitaModel[]> = signal<ReceitaModel[]>([]);
   // 3. O 'computed' substitui a necessidade da variável 'receitas' e da função 'pesquisar'
-  receitasFiltradas = computed(() => {
-    const termo = this.termoBusca().toLowerCase();
-    const listaCompleta = this.receitasGeral();
-
-    if (!termo) return listaCompleta;
-
-    return listaCompleta.filter(r => 
-      r.id.toString().toLowerCase().includes(termo)
-    );
-  });
 
   ngOnInit(): void {
-    this.carregar();
+    //this.carregar();
   }
 
   private carregar(): void {
@@ -78,8 +70,59 @@ export class ReceitaComponent implements OnInit {
 
   // Esta função agora apenas atualiza o termo, o 'computed' faz o resto
   atualizarBusca(event: Event) {
-    const valor = (event.target as HTMLInputElement).value;
-    this.termoBusca.set(valor);
+    const input = event.target as HTMLInputElement;
+    const valor = input.value;
+
+    if (valor.length > 0) {
+      // Agora o .set() vai funcionar!
+      const valorId = Number(valor);
+      this.isLoading.set(true);
+            this.receitaService.BuscarReceitaPorId(valorId).subscribe({
+        next: (res) => {
+          this.receitasFiltradas.set(res.dados);
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.isLoading.set(false);
+          this.receitasFiltradas.set([]);
+        }
+      });
+    } else {
+      this.receitasFiltradas.set([]); // Limpa a tela se o input estiver vazio
+    }
+  }
+
+  buscarReceitaNoServidor(valor: string) {
+    this.isLoading.set(true);
+
+    this.receitaService.BuscarReceita().subscribe({
+      next: (resultado) => {
+        // Se resultado.dados for null, salvamos [] para não quebrar o .length no HTML
+        const dadosGarantidos = resultado.dados ?? []; 
+        this.receitasFiltradas.set(dadosGarantidos);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.receitasFiltradas.set([]); // Garante array vazio no erro
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  listarTodasReceitas() {
+    this.isLoading.set(true);
+    this.receitaService.BuscarReceita().subscribe({
+      next: (resultado) => {
+        if (resultado && resultado.dados) {
+          this.receitasFiltradas.set(resultado.dados);
+        }
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.isLoading.set(false);
+        this.receitasFiltradas.set([]);
+      }
+    });
   }
 
   exportarExcel(): void {
